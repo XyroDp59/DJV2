@@ -8,6 +8,7 @@ public class SoundEmitter : MonoBehaviour
     private AudioSource m_Source;
     private SphereCollider m_Trigger;
     [SerializeField] private float volume2RadiusRatio = 1.0f;
+    [SerializeField] private float interest;
 
     // Start is called before the first frame update
     void Awake()
@@ -24,6 +25,8 @@ public class SoundEmitter : MonoBehaviour
     IEnumerator PlaySoundCoroutine(float volume)
     {
         m_Trigger.enabled = true;
+        m_Source.volume = volume;
+        m_Source.Play();
         m_Trigger.radius = volume * volume2RadiusRatio;
         yield return new WaitForSeconds(m_Source.clip.length);
         m_Trigger.enabled = false;
@@ -34,7 +37,7 @@ public class SoundEmitter : MonoBehaviour
         Enemy enemy;
         if (other.TryGetComponent<Enemy>(out enemy))
         {
-            enemy.AddToInterestPoints(transform);
+            enemy.TriggerInterest(transform, interest / (1+Vector3.Distance(enemy.transform.position, transform.position)));
         }
     }
 }
