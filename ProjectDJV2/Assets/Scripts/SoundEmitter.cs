@@ -8,7 +8,7 @@ public class SoundEmitter : MonoBehaviour
     private AudioSource m_Source;
     private SphereCollider m_Trigger;
     [SerializeField] private float volume2RadiusRatio = 1.0f;
-    [SerializeField] private float interest;
+    [SerializeField] private float volume;
 
     // Start is called before the first frame update
     void Awake()
@@ -32,12 +32,12 @@ public class SoundEmitter : MonoBehaviour
         m_Trigger.enabled = false;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         Enemy enemy;
-        if (other.TryGetComponent<Enemy>(out enemy))
+        if (other.TryGetComponent(out enemy))
         {
-            enemy.TriggerInterest(transform, interest / (1+Vector3.Distance(enemy.transform.position, transform.position)));
+           enemy.HearPlayerNoises(transform.position, volume);
         }
     }
 }
