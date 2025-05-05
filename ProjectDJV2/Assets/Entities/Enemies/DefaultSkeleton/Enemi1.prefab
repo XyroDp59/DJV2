@@ -100,7 +100,7 @@ Transform:
   m_GameObject: {fileID: 3270276004341466547}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.51, y: 0, z: 0.029999971}
+  m_LocalPosition: {x: -8.25, y: 0, z: 0.029999971}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -131,7 +131,7 @@ Transform:
   m_GameObject: {fileID: 3941335807097266348}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.089999914, y: 0, z: 5.71}
+  m_LocalPosition: {x: -1.33, y: 0, z: 5.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -291,6 +291,10 @@ MonoBehaviour:
   enemyBody: {fileID: 7401278108985024361}
   angleFOV: 45
   visionRange: 5
+  visualInterest: 2
+  auditionRange: 5
+  hearPower: 0.5
+  auditionInterest: 1
 --- !u!1 &4754204380883660100
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,7 +354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.34117648}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -379,6 +383,7 @@ GameObject:
   - component: {fileID: 8038621208021301386}
   - component: {fileID: 8801177536701868201}
   - component: {fileID: 5804619881207191092}
+  - component: {fileID: 2675562809757927702}
   m_Layer: 5
   m_Name: AttentionBar Canvas
   m_TagString: Untagged
@@ -469,6 +474,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &2675562809757927702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6405127201723948050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ba9890ff1f8bb6469fbd015cf833ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7670117959441856301
 GameObject:
   m_ObjectHideFlags: 0
@@ -652,21 +669,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db24b210d96cf94a8959587472612a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attention: 3
-  attentionBarFill: {fileID: 0}
+  attention: 5
+  attentionBarFill: {fileID: 5647576375536973576}
   attentionBarGradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
+    key1: {r: 1, g: 0.87785375, b: 0, a: 1}
+    key2: {r: 1, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 65535
-    ctime2: 0
+    ctime1: 34772
+    ctime2: 65535
     ctime3: 0
     ctime4: 0
     ctime5: 0
@@ -682,13 +699,13 @@ MonoBehaviour:
     atime7: 0
     m_Mode: 0
     m_ColorSpace: -1
-    m_NumColorKeys: 2
+    m_NumColorKeys: 3
     m_NumAlphaKeys: 2
-  auditionRange: 15
-  hearPower: 5
   idleState: {fileID: 2576153781836973062}
   wonderState: {fileID: 1694567198388997229}
   alertedState: {fileID: 1864812332141439042}
+  data: {fileID: 11400000, guid: bcf3a9808f5ef5c4bafb35d87049ebb2, type: 2}
+  debugger: 0
 --- !u!114 &3789001762943885118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -733,7 +750,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 2
-  alertedDuration: 15
+  alertedDuration: 3
 --- !u!114 &2576153781836973062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -746,7 +763,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63416c9db39e70346ab4d0dba5140419, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 1
   targetPath:
   - {fileID: 1387064354867071365}
   - {fileID: 7579241731673400819}
@@ -777,7 +793,7 @@ Transform:
   m_GameObject: {fileID: 8376072865188673165}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.57, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

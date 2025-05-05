@@ -4,14 +4,21 @@ using UnityEngine;
 
 public class EnemyWonderingState : MonoBehaviour, IEnemyState
 {
-    [SerializeField] float Speed;
-    [SerializeField] float radius;
-    [SerializeField] float waitDuration = 1f;
+    float Speed;
+    float radius;
+    float waitDuration = 1f;
     WaitForSeconds waitCooldown;
+
+    public void FirstInitialize(EnemyData data)
+    {
+        Speed = data.wonderSpeed;
+        radius = data.wonderRadius;
+        waitDuration = data.wonderWaitDuration;
+    }
 
     public void OnInitialize(Enemy enemy)
     {
-        Debug.Log("IS WONDERING");
+        if (enemy.debugger) Debug.Log("IS WONDERING");
         enemy.SetSpeed(Speed);
     }
 

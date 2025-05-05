@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class EnemyDollyState : MonoBehaviour, IEnemyState
 {
-    [SerializeField] float Speed;
+    float Speed;
     [SerializeField] List<Transform> targetPath = new List<Transform>();
     int currentTargetID = 0;
-    [SerializeField] float waitDuration = 1f;
+    float waitDuration = 1f;
     WaitForSeconds waitCooldown;
+
+    public void FirstInitialize(EnemyData data)
+    {
+        Speed = data.dollySpeed;
+        waitDuration = data.dollyWaitDuration;
+    }
 
     public void OnInitialize(Enemy enemy)
     {
-        Debug.Log("IS DOLLY");
+        if (enemy.debugger) Debug.Log("IS DOLLY");
         enemy.SetSpeed(Speed);
         enemy.SetDestination(targetPath[0].position);
     }
@@ -31,7 +37,7 @@ public class EnemyDollyState : MonoBehaviour, IEnemyState
     {
         currentTargetID = (currentTargetID + 1) % targetPath.Count;
         enemy.SetDestination(targetPath[currentTargetID].position);
-        Debug.Log("path dest id = " + currentTargetID);
+        if (enemy.debugger) Debug.Log("path dest id = " + currentTargetID);
 
         if (waitCooldown == null) { waitCooldown = new WaitForSeconds(waitDuration); }
         enemy.SetSpeed(0f);

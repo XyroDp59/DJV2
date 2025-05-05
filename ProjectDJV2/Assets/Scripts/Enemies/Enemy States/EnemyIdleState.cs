@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class EnemyIdleState : MonoBehaviour, IEnemyState
 {
-    public float precision = 0.1f;
-    [SerializeField] private float Speed = 1f;
-    [SerializeField] Vector3 initialPosition;
-    [SerializeField] Vector3 lookAtPosition;
+    float precision = 0.1f;
+    private float Speed = 1f;
+    Vector3 initialPosition;
+    Vector3 lookAtPosition;
 
     private void Start()
     {
@@ -17,7 +17,7 @@ public class EnemyIdleState : MonoBehaviour, IEnemyState
 
     public void OnInitialize(Enemy enemy)
     {
-        Debug.Log("IS IDLE");
+        if (enemy.debugger) Debug.Log("IS IDLE");
         enemy.SetSpeed(Speed);
     }
 
@@ -36,7 +36,7 @@ public class EnemyIdleState : MonoBehaviour, IEnemyState
 
     public void OnDestinationFoundAction(Enemy enemy)
     {
-        Debug.Log("This is really unlikely !");
+        if (enemy.debugger) Debug.Log("This is really unlikely !");
     }
 
 }

@@ -21,10 +21,6 @@ public class Enemy : MonoBehaviour
 
     public Vector3 lastKnownPlayerPos { get; private set; }
 
-    [Header("Senses")]
-    [SerializeField] float auditionRange;
-    [SerializeField] float hearPower;
-
     [Header("States")]
     IEnemyState currentState;
     IEnemyState defaultState;
@@ -32,13 +28,22 @@ public class Enemy : MonoBehaviour
     [SerializeField] EnemyDollyState idleState;
     [SerializeField] EnemyWonderingState wonderState;
     [SerializeField] EnemyAlertedState alertedState;
+    [SerializeField] EnemyData data;
 
+    public bool debugger = false;
 
+    public EnemyData GetData()
+    {
+        return data;
+    }
 
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         defaultState = idleState;
+        idleState.FirstInitialize(data);
+        wonderState.FirstInitialize(data);
+        alertedState.FirstInitialize(data);
         GoToDefaultState();
     }
 
@@ -50,7 +55,7 @@ public class Enemy : MonoBehaviour
         if (Vector3.Distance(agent.destination, agent.transform.position) < 0.5)
         {
             OnDestinationFound.Invoke(this);
-            Debug.Log("Destination found !");
+            if(debugger) Debug.Log("Destination found !");
         }
 
 
@@ -85,8 +90,8 @@ public class Enemy : MonoBehaviour
     {
         if(currentState != (IEnemyState)alertedState)
         {
-            interest += (1 + quantity) * Time.deltaTime;
-            Debug.Log("interest : " + Mathf.Round(interest * 100) / 100 + " / " + attention);
+            interest = Mathf.Clamp(interest + (1 + quantity) * Time.deltaTime,0,attention);
+            if (debugger) Debug.Log("interest : " + Mathf.Round(interest * 100) / 100 + " / " + attention);
         }
         else alertedState.ResetAlertedTimer();
         lastKnownPlayerPos = objectPos;
@@ -120,56 +125,4 @@ public class Enemy : MonoBehaviour
     }
 
     #endregion
-
-    #region Senses
-
-    public void HearPlayerNoises(Vector3 noisePos, float volume)
-    {
-        bool isInRange = Vector3.Distance(noisePos, transform.position) < auditionRange;
-        bool isLoudEnough = volume > hearPower;
-
-        if (isInRange && isLoudEnough)
-        {
-            TriggerInterest(transform.position, 1);
-        }
-    }
-    #endregion
-
-    /*
-    #region look around
-
-    IEnumerator InspectLocationAndChangeDestination(Vector3 newDestination, float inspectionDuration, float leftRightNumber)
-    {
-        Debug.Log(newDestination);
-        agent.isStopped = true;
-        
-        int sign = 1;
-        StartCoroutine(InspectionLook(sign, inspectionDuration / 2));
-        yield return new WaitForSeconds(inspectionDuration / 2);
-
-        for (float n = 1; n < leftRightNumber -1; n++)
-        {
-            sign *= -1;
-            StartCoroutine(InspectionLook(sign, inspectionDuration));
-            yield return new WaitForSeconds(inspectionDuration);
-        }
-        sign *= -1;
-        StartCoroutine(InspectionLook(sign, inspectionDuration / 2));
-        yield return new WaitForSeconds(inspectionDuration / 2);
-        
-        yield return null;
-        agent.isStopped = false;
-        agent.destination = newDestination;
-    }
-
-    IEnumerator InspectionLook(int lookClockwise, float lookDuration)
-    {
-        for (float t = 0; t < lookDuration; t += Time.deltaTime)
-        {
-            yield return null;
-            transform.Rotate(lookClockwise * angularSpeed * Vector3.up * Time.deltaTime);
-        }
-    }
-    #endregion
-    */
 }
