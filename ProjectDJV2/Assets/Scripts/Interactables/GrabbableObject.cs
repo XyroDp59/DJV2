@@ -2,28 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 
-public class GrabbableObject : InteractableObject
+[RequireComponent(typeof(Rigidbody))]
+public class GrabbableObject : MonoBehaviour, IInteractable
 {
     [SerializeField] GameObject ThrowIndicator;
     [SerializeField] private float throwVelocity;
     [SerializeField] private float thrownVolume;
     [SerializeField] private float grabbedVolume;
 
+    [SerializeField] public UnityEvent OnInteract;
+    SoundEmitter emitter;
 
-    private bool isThrown = false;
+    public bool isThrown = false;
     Rigidbody rb;
 
-    private new void Awake()
+    private void Awake()
     {
-        base.Awake();
+        emitter = GetComponent<SoundEmitter>();
         rb = GetComponent<Rigidbody>();
     }
 
+    public Rigidbody GetRigidbody()
+    {
+        return rb;
+    }
 
     public void Interact(PlayerController player)
     {
+        OnInteract.Invoke();
         OnGrab(player);
     }
 
@@ -31,17 +40,13 @@ public class GrabbableObject : InteractableObject
 
     private void OnGrab(PlayerController player)
     {
-        transform.parent = player.transform;
-        transform.localPosition = Vector3.up * (player.transform.localScale.y + transform.localScale.y) ;
-        ThrowIndicator.SetActive(true);
-        emitter.PlaySound(grabbedVolume);
-    }
 
-    public void Throw()
-    {
-        rb.velocity = (transform.parent.forward + Vector3.up).normalized * throwVelocity;
-        transform.parent = null;
-        isThrown = true;
+        rb.useGravity = false;
+        rb.isKinematic = true;
+        transform.parent = player.transform;
+        transform.localPosition = Vector3.up * (player.transform.localScale.y*1.2f + transform.localScale.y) ;
+        player.SetItemGrabbed(this);
+        emitter.PlaySound(grabbedVolume);
     }
 
     private void OnCollisionEnter(Collision collision)

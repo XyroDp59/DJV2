@@ -1,21 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(SoundEmitter))]
-public class InteractableObject : MonoBehaviour
+public class Lever : MonoBehaviour, IInteractable
 {
     [SerializeField] public UnityEvent OnInteract;
-    [SerializeField] protected SoundEmitter emitter;
+    protected SoundEmitter emitter;
 
-    public void Interact()
+    public void Interact(PlayerController player)
     {
         OnInteract.Invoke();
     }
 
     protected void Awake()
     {
-        
+        emitter = GetComponent<SoundEmitter>();
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEngine.GraphicsBuffer;
 
 [RequireComponent(typeof(SoundEmitter))]
 public class PlayerController : MonoBehaviour
@@ -7,14 +8,19 @@ public class PlayerController : MonoBehaviour
     private PlayerControls controls;
     private Vector2 moveInput;
 
-    private GrabbableObject currentGrabbedItem;
-    private InteractableObject nearActivable;
+    private GrabbableObject currentGrabbedItem = null;
+    private IInteractable nearActivable = null;
 
     public UnityEvent OnInteractEvent;
     private SoundEmitter soundEmitter;
     private Rigidbody rb;
 
+    [Header("Interaction")]
+    [SerializeField] float interactionRange = 1.5f;
+    [SerializeField] ParticleSystem throwIndicator;
+    [SerializeField] float throwVelocity = 3f;
 
+    [Header("Movement")]
     [SerializeField] float crouchSpeed = 1f;
     [SerializeField] float walkSpeed = 3f;
     [SerializeField] float runningSpeed = 5f;
@@ -32,6 +38,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    #region Input System
     private void OnEnable()
     {
         controls.Gameplay.Enable();
@@ -51,29 +58,53 @@ public class PlayerController : MonoBehaviour
     {
         controls.Gameplay.Disable();
     }
-
-
+    #endregion
+    #region Interactions
     private void OnInteract()
     {
         if (currentGrabbedItem != null)
         {
-            currentGrabbedItem.Throw();
+            Throw();
             return;
         }
         if (nearActivable == null) return;
 
-        nearActivable.Interact();
+        nearActivable.Interact(this);
         OnInteractEvent.Invoke();
     }
 
+    public void SetItemGrabbed(GrabbableObject grabbableObject)
+    {
+        throwIndicator.gameObject.SetActive(!(grabbableObject == null));
+        currentGrabbedItem = grabbableObject;
+    }
+
+    public void Throw()
+    {
+        currentGrabbedItem.GetRigidbody().useGravity = true;
+        currentGrabbedItem.GetRigidbody().isKinematic = false;
+        currentGrabbedItem.transform.parent = null;
+        currentGrabbedItem.isThrown = true;
+        currentGrabbedItem.GetRigidbody().velocity = (transform.forward + Vector3.up).normalized * throwVelocity;
+
+        SetItemGrabbed(null);
+    }
+    #endregion
+
     private void Update()
     {
-        rb.velocity = new Vector3(moveInput.x,0,moveInput.y) * currentSpeed ;
+        //Move player and play sounds
+        Vector3 dir = new Vector3(moveInput.x, 0, moveInput.y);
+        rb.velocity = dir * currentSpeed ;
         if(moveInput != Vector2.zero)
         {
            soundEmitter.PlaySound(currentSpeed);
+           Quaternion targetRotation = Quaternion.LookRotation(dir);
+            rb.angularVelocity *= 0;
+            transform.rotation = targetRotation;
         }
 
+        //Stamina
         if (isRunning)
         {
             if (stamina <= 0f) return;
@@ -83,5 +114,19 @@ public class PlayerController : MonoBehaviour
         }
         else
             stamina = Mathf.Clamp(stamina + Time.deltaTime, -maxStamina, maxStamina);
+
+        //Check if an item is in range
+        RaycastHit hit;
+        Physics.Raycast(transform.position, transform.forward, out hit, interactionRange);
+        if (hit.collider != null && hit.collider.gameObject.TryGetComponent(out IInteractable i))
+        {
+            nearActivable = i;
+        }
+        else nearActivable = null;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * interactionRange);
     }
 }
