@@ -55,6 +55,7 @@ public class GrabbableObject : MonoBehaviour, IInteractable
         {
             isThrown = false;
             emitter.PlaySound(thrownVolume);
+            Debug.Log("BONK");
         }
     }
 

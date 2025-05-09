@@ -8,9 +8,6 @@ public class PlayerController : MonoBehaviour
     private PlayerControls controls;
     private Vector2 moveInput;
 
-    private GrabbableObject currentGrabbedItem = null;
-    private IInteractable nearActivable = null;
-
     public UnityEvent OnInteractEvent;
     private SoundEmitter soundEmitter;
     private Rigidbody rb;
@@ -19,6 +16,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float interactionRange = 1.5f;
     [SerializeField] ParticleSystem throwIndicator;
     [SerializeField] float throwVelocity = 3f;
+    private GrabbableObject currentGrabbedItem = null;
+    private IInteractable nearActivable = null;
 
     [Header("Movement")]
     [SerializeField] float crouchSpeed = 1f;
@@ -73,6 +72,11 @@ public class PlayerController : MonoBehaviour
         OnInteractEvent.Invoke();
     }
 
+    public void SetInteractableObject(IInteractable i)
+    {
+        nearActivable = i;
+    }
+
     public void SetItemGrabbed(GrabbableObject grabbableObject)
     {
         throwIndicator.gameObject.SetActive(!(grabbableObject == null));
@@ -114,15 +118,6 @@ public class PlayerController : MonoBehaviour
         }
         else
             stamina = Mathf.Clamp(stamina + Time.deltaTime, -maxStamina, maxStamina);
-
-        //Check if an item is in range
-        RaycastHit hit;
-        Physics.Raycast(transform.position, transform.forward, out hit, interactionRange);
-        if (hit.collider != null && hit.collider.gameObject.TryGetComponent(out IInteractable i))
-        {
-            nearActivable = i;
-        }
-        else nearActivable = null;
     }
 
     private void OnDrawGizmos()
