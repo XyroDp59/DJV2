@@ -57,15 +57,11 @@ public class EnemySenses : MonoBehaviour
         SoundEmitter s;
         if (other.TryGetComponent(out s))
         {
-            Debug.Log("hear noises");
             bool isInRange = Vector3.Distance(s.transform.position, enemyBody.transform.position) < auditionRange;
             float auditionInterest = s.GetSoundVolume() - hearPower;
 
-            Debug.Log("-----> " + auditionInterest);
-
             if (isInRange && auditionInterest > 0)
             {
-                Debug.Log("AAAH");
                 enemyBody.TriggerInterest(other.transform.position, auditionFactor * auditionInterest);
             }
         }
