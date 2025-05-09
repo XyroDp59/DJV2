@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviour
     {
         currentState.Behave(this);
 
-        if (Vector3.Distance(agent.destination, agent.transform.position) < 0.5)
+        if (Vector3.Distance(agent.destination, agent.transform.position) < 1)
         {
             OnDestinationFound.Invoke(this);
             if(debugger) Debug.Log("Destination found !");
@@ -100,7 +100,7 @@ public class Enemy : MonoBehaviour
         if (currentState == defaultState || currentState == (IEnemyState)wonderState)
         {
             if (interest >= attention) GoToState(alertedState);
-            else if (interest > 0) GoToState(wonderState);
+            //else if (interest > 0) GoToState(wonderState);
         }
     }
 

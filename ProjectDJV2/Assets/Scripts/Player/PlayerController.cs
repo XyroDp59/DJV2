@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
 
     [Header("Camera Control")]
-    [SerializeField] CinemachineVirtualCamera virtualCamera;
+    [SerializeField] CinemachineVirtualCamera topDownCamera;
     [SerializeField] float cameraSpeed = 0.5f;
     CinemachineTrackedDolly trackedDollyCam;
     private float currentCameraMovement = 0;
@@ -42,7 +42,6 @@ public class PlayerController : MonoBehaviour
         controls = new PlayerControls();
         soundEmitter = GetComponent<SoundEmitter>();
         rb = GetComponent<Rigidbody>();
-        trackedDollyCam = virtualCamera.GetCinemachineComponent<CinemachineTrackedDolly>();
     }
 
     #region Input System
@@ -61,10 +60,7 @@ public class PlayerController : MonoBehaviour
         controls.Gameplay.Sprint.canceled += ctx => { currentSpeed = walkSpeed; isRunning = false; };
         currentSpeed = walkSpeed;
 
-        controls.Gameplay.Camera.performed += ctx => currentCameraMovement = ctx.ReadValue<float>();
-        controls.Gameplay.Camera.canceled += ctx => currentCameraMovement = 0;
-
-        controls.Gameplay.SwitchCamera.performed += ctx => virtualCamera.gameObject.SetActive(!virtualCamera.isActiveAndEnabled);
+        controls.Gameplay.SwitchCamera.performed += ctx => topDownCamera.gameObject.SetActive(!topDownCamera.isActiveAndEnabled);
     }
     private void OnDisable()
     {
@@ -115,12 +111,19 @@ public class PlayerController : MonoBehaviour
         if (moveInput != Vector2.zero)
         {
             rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0, moveInput.x, 0)));
-            rb.velocity = (transform.forward * moveInput.y * currentSpeed);
+
+            if (!topDownCamera.isActiveAndEnabled)
+            {
+                rb.velocity = (transform.forward * moveInput.y * currentSpeed);
+            } else
+            {
+                rb.velocity = new Vector3(moveInput.x,0,moveInput.y) * currentSpeed;
+            }
+
             soundEmitter.PlaySound(currentSpeed);
             rb.angularVelocity *= 0;
         }
         else rb.velocity = Vector3.zero;
-        trackedDollyCam.m_PathPosition += cameraSpeed * currentCameraMovement * Time.deltaTime;
 
         //Stamina
         if (isRunning)
