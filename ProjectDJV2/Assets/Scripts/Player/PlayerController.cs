@@ -1,3 +1,4 @@
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 using static UnityEngine.GraphicsBuffer;
@@ -11,6 +12,12 @@ public class PlayerController : MonoBehaviour
     public UnityEvent OnInteractEvent;
     private SoundEmitter soundEmitter;
     private Rigidbody rb;
+
+    [Header("Camera Control")]
+    [SerializeField] CinemachineVirtualCamera virtualCamera;
+    [SerializeField] float cameraSpeed = 0.5f;
+    CinemachineTrackedDolly trackedDollyCam;
+    private float currentCameraMovement = 0;
 
     [Header("Interaction")]
     [SerializeField] float interactionRange = 1.5f;
@@ -35,6 +42,7 @@ public class PlayerController : MonoBehaviour
         controls = new PlayerControls();
         soundEmitter = GetComponent<SoundEmitter>();
         rb = GetComponent<Rigidbody>();
+        trackedDollyCam = virtualCamera.GetCinemachineComponent<CinemachineTrackedDolly>();
     }
 
     #region Input System
@@ -52,11 +60,16 @@ public class PlayerController : MonoBehaviour
         controls.Gameplay.Sprint.performed += ctx => isRunning = true;
         controls.Gameplay.Sprint.canceled += ctx => { currentSpeed = walkSpeed; isRunning = false; };
         currentSpeed = walkSpeed;
+
+        controls.Gameplay.Camera.performed += ctx => currentCameraMovement = ctx.ReadValue<float>();
+        controls.Gameplay.Camera.canceled += ctx => currentCameraMovement = 0;
+
     }
     private void OnDisable()
     {
         controls.Gameplay.Disable();
     }
+
     #endregion
     #region Interactions
     private void OnInteract()
@@ -107,6 +120,7 @@ public class PlayerController : MonoBehaviour
             rb.angularVelocity *= 0;
             transform.rotation = targetRotation;
         }
+        trackedDollyCam.m_PathPosition += cameraSpeed * currentCameraMovement * Time.deltaTime;
 
         //Stamina
         if (isRunning)
