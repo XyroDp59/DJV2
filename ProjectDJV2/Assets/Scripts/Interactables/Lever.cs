@@ -9,6 +9,7 @@ public class Lever : MonoBehaviour, IInteractable
 
     public void Interact(PlayerController player)
     {
+        Debug.Log("Interact");
         OnInteract.Invoke();
     }
 
