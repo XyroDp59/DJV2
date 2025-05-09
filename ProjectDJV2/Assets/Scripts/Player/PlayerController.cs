@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviour
         controls.Gameplay.Camera.performed += ctx => currentCameraMovement = ctx.ReadValue<float>();
         controls.Gameplay.Camera.canceled += ctx => currentCameraMovement = 0;
 
+        controls.Gameplay.SwitchCamera.performed += ctx => virtualCamera.gameObject.SetActive(!virtualCamera.isActiveAndEnabled);
     }
     private void OnDisable()
     {
@@ -111,15 +112,14 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         //Move player and play sounds
-        Vector3 dir = new Vector3(moveInput.x, 0, moveInput.y);
-        rb.velocity = dir * currentSpeed ;
-        if(moveInput != Vector2.zero)
+        if (moveInput != Vector2.zero)
         {
-           soundEmitter.PlaySound(currentSpeed);
-           Quaternion targetRotation = Quaternion.LookRotation(dir);
+            rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0, moveInput.x, 0)));
+            rb.velocity = (transform.forward * moveInput.y * currentSpeed);
+            soundEmitter.PlaySound(currentSpeed);
             rb.angularVelocity *= 0;
-            transform.rotation = targetRotation;
         }
+        else rb.velocity = Vector3.zero;
         trackedDollyCam.m_PathPosition += cameraSpeed * currentCameraMovement * Time.deltaTime;
 
         //Stamina
