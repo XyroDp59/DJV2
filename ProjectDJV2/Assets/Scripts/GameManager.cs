@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] Canvas GameOverScreen;
-    [SerializeField] Canvas PauseScreen;
+    [SerializeField] GameObject GameOverScreen;
+    [SerializeField] GameObject PauseScreen;
     bool canPause;
 
     public static GameManager Instance;

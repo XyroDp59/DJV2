@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(SphereCollider))]
 public class SoundEmitter : MonoBehaviour
 {
+    [SerializeField] private UnityEvent onPlay;
+    
     private AudioSource m_Source;
     private SphereCollider m_Trigger;
     private float volume;
@@ -31,7 +34,7 @@ public class SoundEmitter : MonoBehaviour
         m_IsPlaying = true;
         this.volume = volume;
         m_Source.volume = volume;
-        m_Source.Play();
+        onPlay.Invoke();
         yield return new WaitForSeconds(m_Source.clip.length);
         m_IsPlaying=false;
         this.volume = 0;
