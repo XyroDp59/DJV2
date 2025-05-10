@@ -11,6 +11,8 @@ public class SoundEmitter : MonoBehaviour
     private float volume;
     private bool m_IsPlaying;
 
+    private float floorCoeff = 1f;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -23,7 +25,12 @@ public class SoundEmitter : MonoBehaviour
     public void PlaySound(float volume)
     {
         if (m_IsPlaying) { return; }
-        StartCoroutine(PlaySoundCoroutine(volume));
+        StartCoroutine(PlaySoundCoroutine(volume * floorCoeff));
+    }
+
+    public void SetFloorCoeff(float floorCoeff)
+    {
+        this.floorCoeff = floorCoeff;
     }
 
     IEnumerator PlaySoundCoroutine(float volume)
