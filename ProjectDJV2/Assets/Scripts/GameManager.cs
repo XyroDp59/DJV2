@@ -8,11 +8,12 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] Canvas GameOverScreen;
     [SerializeField] Canvas PauseScreen;
-    bool canPause;
+    [SerializeField] Canvas VictoryScreen;
+    bool canPause = true;
 
     public static GameManager Instance;
 
-    public bool CanPause()
+    public bool CanBePaused()
     {
         return canPause;
     }
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1.0f;
+        canPause = true;
     }
     public void Pause()
     {
@@ -47,6 +49,8 @@ public class GameManager : MonoBehaviour
 
     public void LevelCleared()
     {
-
+        GameOverScreen.gameObject.SetActive(true);
+        Time.timeScale = 0.0f;
+        canPause = false;
     }
 }

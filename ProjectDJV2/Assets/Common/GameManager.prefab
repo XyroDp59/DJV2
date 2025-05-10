@@ -1119,6 +1119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameOverScreen: {fileID: 6397268237272694721}
   PauseScreen: {fileID: 7649000980914795801}
+  VictoryScreen: {fileID: 0}
 --- !u!1 &5283686331379163376
 GameObject:
   m_ObjectHideFlags: 0
