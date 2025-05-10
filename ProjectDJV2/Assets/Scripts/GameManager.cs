@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject GameOverScreen;
     [SerializeField] GameObject PauseScreen;
     [SerializeField] GameObject VictoryScreen;
+    [SerializeField] GameObject VolumeControlScreen;
+    
     bool canPause = true;
 
     public static GameManager Instance;
