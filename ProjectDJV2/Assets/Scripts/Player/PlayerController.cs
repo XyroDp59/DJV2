@@ -62,13 +62,14 @@ public class PlayerController : MonoBehaviour
 
         controls.Gameplay.SwitchCamera.performed += ctx => topDownCamera.gameObject.SetActive(!topDownCamera.isActiveAndEnabled);
 
-        /*
+        
         controls.Gameplay.SwitchPause.performed += ctx =>
         {
-            if (GameManager.Instance.IsPaused()) GameManager.Instance.ResumePause();
+            if (!GameManager.Instance.CanBePaused()) return;
+            if(Time.timeScale == 0) GameManager.Instance.ResumePause();
             else GameManager.Instance.Pause();
         };
-        */
+        
     }
     private void OnDisable()
     {

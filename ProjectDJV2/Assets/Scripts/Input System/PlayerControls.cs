@@ -105,17 +105,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""33aa127f-9c2d-4b39-99bf-eb92fafd760b"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Interact"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""9ea97104-19bc-40d8-b839-df6237176bdb"",
                     ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
