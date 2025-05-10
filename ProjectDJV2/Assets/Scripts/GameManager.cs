@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject VolumeControlScreen;
     
     bool canPause = true;
-
     public static GameManager Instance;
 
     public bool CanBePaused()
@@ -51,7 +50,7 @@ public class GameManager : MonoBehaviour
 
     public void LevelCleared()
     {
-        GameOverScreen.gameObject.SetActive(true);
+        VictoryScreen.gameObject.SetActive(true);
         Time.timeScale = 0.0f;
         canPause = false;
     }

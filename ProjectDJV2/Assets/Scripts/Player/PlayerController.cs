@@ -128,7 +128,7 @@ public class PlayerController : MonoBehaviour
             {
                 rb.velocity = new Vector3(moveInput.x,0,moveInput.y) * currentSpeed;
             }
-
+            
             soundEmitter.PlaySound(currentSpeed);
             rb.angularVelocity *= 0;
         }

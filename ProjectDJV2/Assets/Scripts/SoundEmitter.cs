@@ -40,9 +40,10 @@ public class SoundEmitter : MonoBehaviour
     {
         m_IsPlaying = true;
         this.volume = volume;
-        m_Source.volume = volume;
+        //m_Source.volume = volume;
         onPlay.Invoke();
-        yield return new WaitForSeconds(m_Source.clip.length);
+        //yield return new WaitForSeconds(m_Source.clip.length);
+        yield return new WaitForSeconds(0.3f);
         m_IsPlaying=false;
         this.volume = 0;
     }
