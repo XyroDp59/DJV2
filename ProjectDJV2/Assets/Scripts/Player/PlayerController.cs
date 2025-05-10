@@ -61,6 +61,12 @@ public class PlayerController : MonoBehaviour
         currentSpeed = walkSpeed;
 
         controls.Gameplay.SwitchCamera.performed += ctx => topDownCamera.gameObject.SetActive(!topDownCamera.isActiveAndEnabled);
+
+        controls.Gameplay.SwitchPause.performed += ctx =>
+        {
+            if (GameManager.Instance.IsPaused()) GameManager.Instance.ResumePause();
+            else GameManager.Instance.Pause();
+        };
     }
     private void OnDisable()
     {
@@ -124,6 +130,7 @@ public class PlayerController : MonoBehaviour
             rb.angularVelocity *= 0;
         }
         else rb.velocity = Vector3.zero;
+        topDownCamera.transform.position = rb.position + Vector3.up * 15;
 
         //Stamina
         if (isRunning)
@@ -135,6 +142,14 @@ public class PlayerController : MonoBehaviour
         }
         else
             stamina = Mathf.Clamp(stamina + Time.deltaTime, -maxStamina, maxStamina);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.TryGetComponent(out Enemy enemy))
+        {
+            GameManager.Instance.GameOver();
+        }
     }
 
     private void OnDrawGizmos()

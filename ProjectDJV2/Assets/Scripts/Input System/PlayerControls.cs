@@ -80,6 +80,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Switch Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""6a16004f-1c96-4ff2-a4fe-f43603f2288e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -313,6 +322,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Switch Camera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""add71519-8195-4387-9492-7ec7309a5a44"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Switch Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""564a56ad-63ea-47e3-b2d1-24666c21feec"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Switch Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -327,6 +358,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Gameplay_Sprint = m_Gameplay.FindAction("Sprint", throwIfNotFound: true);
         m_Gameplay_Camera = m_Gameplay.FindAction("Camera", throwIfNotFound: true);
         m_Gameplay_SwitchCamera = m_Gameplay.FindAction("Switch Camera", throwIfNotFound: true);
+        m_Gameplay_SwitchPause = m_Gameplay.FindAction("Switch Pause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -394,6 +426,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Sprint;
     private readonly InputAction m_Gameplay_Camera;
     private readonly InputAction m_Gameplay_SwitchCamera;
+    private readonly InputAction m_Gameplay_SwitchPause;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -404,6 +437,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Sprint => m_Wrapper.m_Gameplay_Sprint;
         public InputAction @Camera => m_Wrapper.m_Gameplay_Camera;
         public InputAction @SwitchCamera => m_Wrapper.m_Gameplay_SwitchCamera;
+        public InputAction @SwitchPause => m_Wrapper.m_Gameplay_SwitchPause;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -431,6 +465,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @SwitchCamera.started += instance.OnSwitchCamera;
             @SwitchCamera.performed += instance.OnSwitchCamera;
             @SwitchCamera.canceled += instance.OnSwitchCamera;
+            @SwitchPause.started += instance.OnSwitchPause;
+            @SwitchPause.performed += instance.OnSwitchPause;
+            @SwitchPause.canceled += instance.OnSwitchPause;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -453,6 +490,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @SwitchCamera.started -= instance.OnSwitchCamera;
             @SwitchCamera.performed -= instance.OnSwitchCamera;
             @SwitchCamera.canceled -= instance.OnSwitchCamera;
+            @SwitchPause.started -= instance.OnSwitchPause;
+            @SwitchPause.performed -= instance.OnSwitchPause;
+            @SwitchPause.canceled -= instance.OnSwitchPause;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -478,5 +518,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnCamera(InputAction.CallbackContext context);
         void OnSwitchCamera(InputAction.CallbackContext context);
+        void OnSwitchPause(InputAction.CallbackContext context);
     }
 }
