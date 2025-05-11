@@ -1,6 +1,8 @@
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
+using static Cinemachine.CinemachineTargetGroup;
 using static UnityEngine.GraphicsBuffer;
 
 [RequireComponent(typeof(SoundEmitter))]
@@ -18,6 +20,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float cameraSpeed = 0.5f;
     CinemachineTrackedDolly trackedDollyCam;
     private float currentCameraMovement = 0;
+    float topDownCameraHeight;
 
     [Header("Interaction")]
     [SerializeField] float interactionRange = 1.5f;
@@ -31,10 +34,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float walkSpeed = 3f;
     [SerializeField] float runningSpeed = 5f;
     private float currentSpeed;
-
+    
     [SerializeField] float maxStamina = 2f;
     private bool isRunning = false;
     private float stamina = 0f;
+
+    private bool hasClicked = true;
+    private Vector3 clickedPos;
+
+    public float GetStamina()
+    {
+        return stamina / maxStamina;
+    }
 
     // Start is called before the first frame update
     void Awake()
@@ -42,14 +53,22 @@ public class PlayerController : MonoBehaviour
         controls = new PlayerControls();
         soundEmitter = GetComponent<SoundEmitter>();
         rb = GetComponent<Rigidbody>();
+        topDownCameraHeight = topDownCamera.transform.position.y;
     }
 
     #region Input System
     private void OnEnable()
     {
         controls.Gameplay.Enable();
-        controls.Gameplay.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        controls.Gameplay.Move.canceled += ctx => moveInput = Vector2.zero;
+        controls.Gameplay.Move.performed += ctx =>
+        {
+            hasClicked = false;
+            moveInput = ctx.ReadValue<Vector2>();
+        };
+        controls.Gameplay.Move.canceled += ctx =>
+        {
+            if(!hasClicked) moveInput = Vector2.zero;
+        };
 
         controls.Gameplay.Interact.performed += ctx => OnInteract();
 
@@ -69,11 +88,28 @@ public class PlayerController : MonoBehaviour
             if(Time.timeScale == 0) GameManager.Instance.ResumePause();
             else GameManager.Instance.Pause();
         };
-        
+
+        controls.Gameplay.Click.performed += ctx =>
+        {
+            if (topDownCamera.gameObject.activeSelf) MoveTowardsClick();
+        };
     }
     private void OnDisable()
     {
         controls.Gameplay.Disable();
+    }
+
+    private void MoveTowardsClick()
+    {
+        hasClicked = true;
+        var ray = Camera.main.ScreenPointToRay(Mouse.current.position.value);
+
+        var plane = new Plane(Vector3.up, Vector3.zero);
+        if (plane.Raycast(ray, out var distanceOnRay))
+        {
+            clickedPos = ray.GetPoint(distanceOnRay);
+            moveInput = (clickedPos - transform.position).normalized;
+        }
     }
 
     #endregion
@@ -133,7 +169,9 @@ public class PlayerController : MonoBehaviour
             rb.angularVelocity *= 0;
         }
         else rb.velocity = Vector3.zero;
-        topDownCamera.transform.position = rb.position + Vector3.up * 15;
+        topDownCamera.transform.position = rb.position + Vector3.up * topDownCameraHeight;
+
+        if (Vector3.Distance(clickedPos, transform.position) < 0.5f) hasClicked = false;
 
         //Stamina
         if (isRunning)
