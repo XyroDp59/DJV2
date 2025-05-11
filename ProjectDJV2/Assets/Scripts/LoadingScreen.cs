@@ -27,8 +27,6 @@ public class LoadingScreen : MonoBehaviour
         while (!loadHandle.IsDone)
         {
             downloadSizeText.text = $"{Mathf.FloorToInt(loadHandle.GetDownloadStatus().DownloadedBytes / 1024f)} / {downloadSize}"; ;
-            // Barre de chargement basée sur le pourcentage de téléchargement
-            // loadingBar.anchorMax = new Vector2(Mathf.Lerp(0, 1, loadHandle.GetDownloadStatus().DownloadedBytes / (float)loadDownloadSize.Result), 1);
             // Barre de chargement basée sur le PercentComplete mis à disposition par Unity
             loadingBar.anchorMax = new Vector2(Mathf.Lerp(0, 1, loadHandle.PercentComplete), 1);
             yield return null;

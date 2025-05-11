@@ -24,7 +24,6 @@ public class EnemyAlertedState : MonoBehaviour, IEnemyState
 
     public void ResetAlertedTimer()
     {
-        Debug.Log("IS ALERTED");
         alertedTimer = alertedDuration;
     }
 
@@ -36,13 +35,12 @@ public class EnemyAlertedState : MonoBehaviour, IEnemyState
         if(alertedTimer < 0)
         {
             enemy.GoToDefaultState();
-            Debug.Log("BACK TO DEFAULT");
         }
     }
 
     public void OnDestinationFoundAction(Enemy enemy)
     {
-        Debug.Log("Alerted : arrived to destination (did i kill you ?)");
+        //Debug.Log("Alerted : arrived to destination (did i kill you ?)");
     }
 
     private void OnCollisionEnter(Collision collision)

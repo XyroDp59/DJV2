@@ -17,7 +17,7 @@ MonoBehaviour:
   visualInterest: 2
   auditionRange: 10
   hearPower: 1
-  auditionFactor: 0
+  auditionFactor: 1
   dollySpeed: 1.5
   dollyWaitDuration: 1
   wonderSpeed: 1

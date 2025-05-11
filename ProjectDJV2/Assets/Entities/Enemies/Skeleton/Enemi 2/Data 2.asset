@@ -15,9 +15,9 @@ MonoBehaviour:
   angleFOV: 45
   visionRange: 5
   visualInterest: 2
-  auditionRange: 10
+  auditionRange: 6
   hearPower: 1
-  auditionFactor: 0
+  auditionFactor: 2
   dollySpeed: 2
   dollyWaitDuration: 1
   wonderSpeed: 1

@@ -4,31 +4,30 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(AudioSource))]
-[RequireComponent(typeof(SphereCollider))]
 public class SoundEmitter : MonoBehaviour
 {
     [SerializeField] private UnityEvent onPlay;
+    [SerializeField] private AudioSource source;
     
-    private AudioSource m_Source;
-    private SphereCollider m_Trigger;
     private float volume;
     private bool m_IsPlaying;
 
     private float floorCoeff = 1f;
 
-    // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
-        m_Source = GetComponent<AudioSource>();
-        m_Trigger = GetComponent<SphereCollider>();
-        m_Trigger.isTrigger = true;
-        m_Trigger.radius = 0f;
+        if(source == null) source = GetComponent<AudioSource>();
+    }
+
+    public void PlaySound(float volume, float duration)
+    {
+        if (m_IsPlaying) { return; }
+        StartCoroutine(PlaySoundCoroutine(volume * floorCoeff, duration));
     }
 
     public void PlaySound(float volume)
     {
-        if (m_IsPlaying) { return; }
-        StartCoroutine(PlaySoundCoroutine(volume * floorCoeff));
+        PlaySound(volume, source.clip.length);
     }
 
     public void SetFloorCoeff(float floorCoeff)
@@ -36,14 +35,13 @@ public class SoundEmitter : MonoBehaviour
         this.floorCoeff = floorCoeff;
     }
 
-    IEnumerator PlaySoundCoroutine(float volume)
+    IEnumerator PlaySoundCoroutine(float volume, float duration)
     {
         m_IsPlaying = true;
         this.volume = volume;
         //m_Source.volume = volume;
         onPlay.Invoke();
-        //yield return new WaitForSeconds(m_Source.clip.length);
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(duration);
         m_IsPlaying=false;
         this.volume = 0;
     }
