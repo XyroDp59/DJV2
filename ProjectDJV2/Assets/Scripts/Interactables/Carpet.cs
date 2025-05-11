@@ -10,8 +10,15 @@ public class NewBehaviourScript : MonoBehaviour
     {
         if (other.TryGetComponent(out SoundEmitter s))
         {
-            Debug.Log(s.gameObject.name);
             s.SetFloorCoeff(soundCoefficient);
+        }
+    }
+    
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent(out SoundEmitter s))
+        {
+            s.SetFloorCoeff(1);
         }
     }
 }
