@@ -51,4 +51,9 @@ public class SoundEmitter : MonoBehaviour
         if (m_IsPlaying) return volume;
         return 0;
     }
+    
+    public float GetFloorCoeff()
+    {
+        return floorCoeff;
+    }
 }

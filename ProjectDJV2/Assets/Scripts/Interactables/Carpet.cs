@@ -10,6 +10,7 @@ public class NewBehaviourScript : MonoBehaviour
     {
         if (other.TryGetComponent(out SoundEmitter s))
         {
+            Debug.Log(s.gameObject.name);
             s.SetFloorCoeff(soundCoefficient);
         }
     }
