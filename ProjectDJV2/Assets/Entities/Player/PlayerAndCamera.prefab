@@ -252,9 +252,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 303281283706716405}
     m_Modifications:
     - target: {fileID: 938416093079152230, guid: 17ce36a14349dec44a8f529ec5400cba, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.292
+      propertyPath: m_LocalPosition.y
+      value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 938416093079152230, guid: 17ce36a14349dec44a8f529ec5400cba, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1066183267356172197, guid: 17ce36a14349dec44a8f529ec5400cba, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d1b67b7ced83a0147b06890b68c7b847, type: 2}
     - target: {fileID: 1445026653655903673, guid: 17ce36a14349dec44a8f529ec5400cba, type: 3}
       propertyPath: m_Volume
       value: 0.2
@@ -390,6 +398,10 @@ PrefabInstance:
     - target: {fileID: 7168770211942461911, guid: 17ce36a14349dec44a8f529ec5400cba, type: 3}
       propertyPath: m_Lens.FieldOfView
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7168770211942461911, guid: 17ce36a14349dec44a8f529ec5400cba, type: 3}
+      propertyPath: m_Lens.NearClipPlane
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 8306973378306929409, guid: 17ce36a14349dec44a8f529ec5400cba, type: 3}
       propertyPath: m_Enabled

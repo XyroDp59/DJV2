@@ -82,9 +82,6 @@ public class PlayerController : MonoBehaviour
         controls.Gameplay.SwitchCamera.performed += ctx =>
         {
             topDownCamera.gameObject.SetActive(!topDownCamera.isActiveAndEnabled);
-            Cursor.visible = topDownCamera.isActiveAndEnabled;
-            if(!topDownCamera.isActiveAndEnabled) Cursor.lockState = CursorLockMode.None;
-            else Cursor.lockState = CursorLockMode.Locked;
         };
 
         
