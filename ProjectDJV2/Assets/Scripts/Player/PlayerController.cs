@@ -42,7 +42,6 @@ public class PlayerController : MonoBehaviour
 
     private bool hasClicked = false;
     private Vector3 clickedPos;
-    private Vector2 oldMousePos = Vector2.zero;
     [SerializeField] private float followClickedDuration = 1f;
     [SerializeField] float mouseSensitivity = 0.75f;
     WaitForSeconds followClickedDelay;
@@ -84,6 +83,8 @@ public class PlayerController : MonoBehaviour
         {
             topDownCamera.gameObject.SetActive(!topDownCamera.isActiveAndEnabled);
             Cursor.visible = topDownCamera.isActiveAndEnabled;
+            if(!topDownCamera.isActiveAndEnabled) Cursor.lockState = CursorLockMode.None;
+            else Cursor.lockState = CursorLockMode.Locked;
         };
 
         
@@ -156,9 +157,7 @@ public class PlayerController : MonoBehaviour
             // compute first person movement  
         if (!topDownCamera.isActiveAndEnabled && !hasClicked)
         {
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0, (mousePos.x - oldMousePos.x) * mouseSensitivity, 0)));  
-            oldMousePos = mousePos;
+            rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0, Mouse.current.delta.x.value * mouseSensitivity, 0)));  
             movedir = (moveInput.x * transform.right + moveInput.y * transform.forward).normalized;
         }
         else
@@ -212,6 +211,11 @@ public class PlayerController : MonoBehaviour
     public float GetStamina()
     {
         return stamina / maxStamina;
+    }
+
+    public void SetMouseSensitivity(float sensitivity)
+    {
+        mouseSensitivity = sensitivity;
     }
 #endregion
 

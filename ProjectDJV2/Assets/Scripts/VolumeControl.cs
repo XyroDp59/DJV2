@@ -6,12 +6,16 @@ using UnityEngine.UI;
 
 public class VolumeControl : MonoBehaviour
 {
-    // Options
+    [Header("Options")]
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider soundtrackSlider;
     [SerializeField] private Slider sfxSlider;
+    [SerializeField] private Slider sensitivitySlider;
 
+    [Header("References")]
     [SerializeField] private AudioMixer output;
+    [SerializeField] PlayerController player;
+
     
     private bool _isSFXClicked;
     
@@ -31,5 +35,10 @@ public class VolumeControl : MonoBehaviour
     {
         float newVolume = sfxSlider.value > 0 ? 20f * Mathf.Log10(sfxSlider.value) : -80f;
         output.SetFloat("SFXVolume", newVolume);
+    }
+
+    public void OnMouseSensitivityChanged()
+    {
+        player.SetMouseSensitivity(sensitivitySlider.value);
     }
 }
