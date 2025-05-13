@@ -1,4 +1,5 @@
 using Cinemachine;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -39,13 +40,11 @@ public class PlayerController : MonoBehaviour
     private bool isRunning = false;
     private float stamina = 0f;
 
-    private bool hasClicked = true;
+    private bool hasClicked = false;
     private Vector3 clickedPos;
-
-    public float GetStamina()
-    {
-        return stamina / maxStamina;
-    }
+    private Vector2 oldMousePos = Vector2.zero;
+    [SerializeField] private float followClickedDuration = 1f;
+    WaitForSeconds followClickedDelay;
 
     // Start is called before the first frame update
     void Awake()
@@ -54,6 +53,7 @@ public class PlayerController : MonoBehaviour
         soundEmitter = GetComponent<SoundEmitter>();
         rb = GetComponent<Rigidbody>();
         topDownCameraHeight = topDownCamera.transform.position.y;
+        followClickedDelay = new WaitForSeconds(followClickedDuration);
     }
 
     #region Input System
@@ -67,7 +67,7 @@ public class PlayerController : MonoBehaviour
         };
         controls.Gameplay.Move.canceled += ctx =>
         {
-            if(!hasClicked) moveInput = Vector2.zero;
+            moveInput = Vector2.zero;
         };
 
         controls.Gameplay.Interact.performed += ctx => OnInteract();
@@ -89,31 +89,24 @@ public class PlayerController : MonoBehaviour
             else GameManager.Instance.Pause();
         };
 
-        controls.Gameplay.Click.performed += ctx =>
-        {
-            if (topDownCamera.gameObject.activeSelf) MoveTowardsClick();
-        };
+        controls.Gameplay.Click.performed += ctx => hasClicked = true;
+        controls.Gameplay.Click.canceled += ctx => hasClicked = false;
     }
     private void OnDisable()
     {
         controls.Gameplay.Disable();
     }
+    #endregion
 
-    private void MoveTowardsClick()
+    #region Interactions
+    private void OnCollisionEnter(Collision collision)
     {
-        hasClicked = true;
-        var ray = Camera.main.ScreenPointToRay(Mouse.current.position.value);
-
-        var plane = new Plane(Vector3.up, Vector3.zero);
-        if (plane.Raycast(ray, out var distanceOnRay))
+        if (collision.gameObject.TryGetComponent(out Enemy enemy))
         {
-            clickedPos = ray.GetPoint(distanceOnRay);
-            moveInput = (clickedPos - transform.position).normalized;
+            GameManager.Instance.GameOver();
         }
     }
 
-    #endregion
-    #region Interactions
     private void OnInteract()
     {
         if (currentGrabbedItem != null)
@@ -150,30 +143,44 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+    #region Movement
     private void Update()
     {
-        //Move player and play sounds
-        if (moveInput != Vector2.zero)
+        //------------ Movement and camera ------------//
+        Vector3 movedir;
+            // compute first person movement  
+        if (!topDownCamera.isActiveAndEnabled && !hasClicked)
         {
-            rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0, moveInput.x, 0)));
-
-            if (!topDownCamera.isActiveAndEnabled)
-            {
-                rb.velocity = (transform.forward * moveInput.y * currentSpeed);
-            } else
-            {
-                rb.velocity = new Vector3(moveInput.x,0,moveInput.y) * currentSpeed;
-            }
-            
-            soundEmitter.PlaySound(currentSpeed, 0.3f);
-            rb.angularVelocity *= 0;
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0, mousePos.x - oldMousePos.x, 0)));  
+            oldMousePos = mousePos;
+            movedir = (moveInput.x * transform.right + moveInput.y * transform.forward).normalized;
         }
-        else rb.velocity = Vector3.zero;
+        else
+        {
+            // compute top down movement using mouse
+            if (moveInput.magnitude > 0)  hasClicked = false;
+            if(hasClicked)
+            {
+                MoveTowardsClick();
+            }
+            // compute top down movement using WASD
+            else
+            {
+                transform.LookAt(transform.position + new Vector3(moveInput.x, 0, moveInput.y));
+            }
+            movedir = transform.forward;
+        }
+        // Apply movement 
+        if (moveInput == Vector2.zero && !hasClicked) rb.velocity = Vector3.zero;
+        else rb.velocity = movedir * currentSpeed;
+
         topDownCamera.transform.position = rb.position + Vector3.up * topDownCameraHeight;
 
-        if (Vector3.Distance(clickedPos, transform.position) < 0.5f) hasClicked = false;
+        // ------------ Play walking sounds ------------//
+        if (rb.velocity != Vector3.zero) soundEmitter.PlaySound(currentSpeed, 0.3f);
 
-        //Stamina
+        //------------ Stamina ------------//
         if (isRunning)
         {
             if (stamina <= 0f) return;
@@ -185,16 +192,27 @@ public class PlayerController : MonoBehaviour
             stamina = Mathf.Clamp(stamina + Time.deltaTime, -maxStamina, maxStamina);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void MoveTowardsClick()
     {
-        if(collision.gameObject.TryGetComponent(out Enemy enemy))
+        var ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+        var plane = new Plane(Vector3.up, Vector3.zero);
+        if (plane.Raycast(ray, out var distanceOnRay))
         {
-            GameManager.Instance.GameOver();
+            clickedPos = ray.GetPoint(distanceOnRay);
+            clickedPos.y = transform.position.y;
+            transform.LookAt(clickedPos);
         }
     }
+    public float GetStamina()
+    {
+        return stamina / maxStamina;
+    }
+#endregion
 
     private void OnDrawGizmos()
     {
         Gizmos.DrawLine(transform.position, transform.position + transform.forward * interactionRange);
+        Gizmos.DrawLine(transform.position, clickedPos);
     }
 }

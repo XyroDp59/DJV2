@@ -72,10 +72,10 @@ public class EnemySenses : MonoBehaviour
             bool isInRange = Vector3.Distance(s.transform.position, enemyBody.transform.position) < auditionRange;
             float auditionInterest = s.GetSoundVolume() - hearPower;
 
-            Debug.Log(enemyBody.name + " hear " + s.name + "? \n"
+        /*    Debug.Log(enemyBody.name + " hear " + s.name + "? \n"
             + " | dist : " + Vector3.Distance(s.transform.position, enemyBody.transform.position) + " <? " + auditionRange
             + "\n | volume : " + s.GetSoundVolume() + " >? " + hearPower);
-
+        */
             if (isInRange && auditionInterest > 0)
             {
                 Debug.Log("Interest :" + auditionFactor * auditionInterest); 
