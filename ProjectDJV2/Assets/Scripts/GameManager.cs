@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject VictoryScreen;
     [SerializeField] GameObject VolumeControlScreen;
     
-    bool canPause = true;
+    public bool canPause = true;
     public static GameManager Instance;
 
     public bool CanBePaused()

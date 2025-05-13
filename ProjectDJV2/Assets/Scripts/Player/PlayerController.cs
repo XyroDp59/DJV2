@@ -80,7 +80,11 @@ public class PlayerController : MonoBehaviour
         controls.Gameplay.Sprint.canceled += ctx => { currentSpeed = walkSpeed; isRunning = false; };
         currentSpeed = walkSpeed;
 
-        controls.Gameplay.SwitchCamera.performed += ctx => topDownCamera.gameObject.SetActive(!topDownCamera.isActiveAndEnabled);
+        controls.Gameplay.SwitchCamera.performed += ctx =>
+        {
+            topDownCamera.gameObject.SetActive(!topDownCamera.isActiveAndEnabled);
+            Cursor.visible = topDownCamera.isActiveAndEnabled;
+        };
 
         
         controls.Gameplay.SwitchPause.performed += ctx =>
@@ -90,7 +94,7 @@ public class PlayerController : MonoBehaviour
             else GameManager.Instance.Pause();
         };
 
-        controls.Gameplay.Click.performed += ctx => hasClicked = true;
+        controls.Gameplay.Click.performed += ctx => { if (topDownCamera.isActiveAndEnabled) hasClicked = true; };
         controls.Gameplay.Click.canceled += ctx => hasClicked = false;
     }
     private void OnDisable()
@@ -163,6 +167,7 @@ public class PlayerController : MonoBehaviour
             if (moveInput.magnitude > 0)  hasClicked = false;
             if(hasClicked)
             {
+                Debug.Log("aaaaaaaa");
                 MoveTowardsClick();
             }
             // compute top down movement using WASD
