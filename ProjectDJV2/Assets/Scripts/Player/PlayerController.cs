@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 clickedPos;
     private Vector2 oldMousePos = Vector2.zero;
     [SerializeField] private float followClickedDuration = 1f;
+    [SerializeField] float mouseSensitivity = 0.75f;
     WaitForSeconds followClickedDelay;
 
     // Start is called before the first frame update
@@ -152,7 +153,7 @@ public class PlayerController : MonoBehaviour
         if (!topDownCamera.isActiveAndEnabled && !hasClicked)
         {
             Vector2 mousePos = Mouse.current.position.ReadValue();
-            rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0, mousePos.x - oldMousePos.x, 0)));  
+            rb.MoveRotation(rb.rotation * Quaternion.Euler(new Vector3(0, (mousePos.x - oldMousePos.x) * mouseSensitivity, 0)));  
             oldMousePos = mousePos;
             movedir = (moveInput.x * transform.right + moveInput.y * transform.forward).normalized;
         }
