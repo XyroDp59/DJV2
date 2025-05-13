@@ -6,10 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
     path: Assets/Scenes/LoadScreen.unity
     guid: da72561135601f14d8c7373d4e5a775b
   - enabled: 1
-    path: Assets/Scenes/Brouillon/Iwan.unity
-    guid: 19be4d56d7e978d4b94d6472b3417022
+    path: Assets/Scenes/Game.unity
+    guid: 68264c7bfe38d4040ad78e4d78698f6b
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 93bd42f04679eb240ba39a93b8c4e532, type: 2}

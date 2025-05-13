@@ -34,7 +34,7 @@ public class LoadingScreen : MonoBehaviour
 
         loadingBar.anchorMax = Vector2.one;
 
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
     }
 
     private void Update()
