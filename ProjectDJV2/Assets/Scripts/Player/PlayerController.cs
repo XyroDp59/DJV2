@@ -167,7 +167,6 @@ public class PlayerController : MonoBehaviour
             if (moveInput.magnitude > 0)  hasClicked = false;
             if(hasClicked)
             {
-                Debug.Log("aaaaaaaa");
                 MoveTowardsClick();
             }
             // compute top down movement using WASD
@@ -187,7 +186,7 @@ public class PlayerController : MonoBehaviour
         if (rb.velocity != Vector3.zero) soundEmitter.PlaySound(currentSpeed, 0.3f);
 
         //------------ Stamina ------------//
-        if (isRunning)
+        if (isRunning && rb.velocity != Vector3.zero)
         {
             if (stamina <= 0f) return;
             currentSpeed = runningSpeed;
